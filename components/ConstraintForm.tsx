@@ -13,13 +13,11 @@ export default function ConstraintForm({ groupId, code }: { groupId: string; cod
     name: '',
     max_rent: '',
     excluded_areas: [] as string[],
-    // hard
     requires_lift: false,
     requires_parking: false,
     min_bathrooms: 1,
     requires_pet_friendly: false,
     max_floor_without_lift: 0,
-    // soft
     prefers_lift: false,
     prefers_parking: false,
     prefers_pet_friendly: false,
@@ -75,15 +73,18 @@ export default function ConstraintForm({ groupId, code }: { groupId: string; cod
     router.push(`/${code}`);
   }
 
+  const inputCls = "w-full border border-gray-400 rounded-lg px-3 py-2 text-sm text-gray-900 bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500";
+  const selectCls = "w-full border border-gray-400 rounded px-2 py-1 text-sm text-gray-900 bg-white";
+
   const checkbox = (label: string, key: keyof typeof form) => (
-    <label className="flex items-center gap-2 cursor-pointer select-none">
+    <label key={key} className="flex items-center gap-2 cursor-pointer select-none">
       <input
         type="checkbox"
-        className="w-4 h-4 accent-indigo-600"
+        className="w-4 h-4 accent-indigo-600 flex-shrink-0"
         checked={!!form[key]}
         onChange={(e) => setForm((f) => ({ ...f, [key]: e.target.checked }))}
       />
-      <span className="text-sm">{label}</span>
+      <span className="text-sm font-medium text-gray-900">{label}</span>
     </label>
   );
 
@@ -91,9 +92,9 @@ export default function ConstraintForm({ groupId, code }: { groupId: string; cod
     <form onSubmit={handleSubmit} className="space-y-8 max-w-xl mx-auto">
       {/* Name */}
       <div className="space-y-1">
-        <label className="block text-sm font-semibold">Your name</label>
+        <label className="block text-sm font-semibold text-gray-900">Your name</label>
         <input
-          className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          className={inputCls}
           value={form.name}
           onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}
           placeholder="e.g. Riya"
@@ -102,11 +103,11 @@ export default function ConstraintForm({ groupId, code }: { groupId: string; cod
 
       {/* Max rent */}
       <div className="space-y-1">
-        <label className="block text-sm font-semibold">Max monthly rent contribution (₹)</label>
-        <p className="text-xs text-gray-500">Your share — the app assumes rent is split equally among 3.</p>
+        <label className="block text-sm font-semibold text-gray-900">Max monthly rent contribution (₹)</label>
+        <p className="text-xs text-gray-600">Your share — the app assumes rent is split equally among 3.</p>
         <input
           type="number"
-          className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          className={inputCls}
           value={form.max_rent}
           onChange={(e) => setForm((f) => ({ ...f, max_rent: e.target.value }))}
           placeholder="e.g. 14000"
@@ -116,17 +117,17 @@ export default function ConstraintForm({ groupId, code }: { groupId: string; cod
 
       {/* Excluded areas */}
       <div className="space-y-2">
-        <label className="block text-sm font-semibold">Areas you will NOT live in</label>
+        <label className="block text-sm font-semibold text-gray-900">Areas you will NOT live in</label>
         <div className="flex flex-wrap gap-2">
           {PUNE_AREAS.map((area) => (
             <button
               key={area}
               type="button"
               onClick={() => toggleArea(area)}
-              className={`px-3 py-1 rounded-full text-xs font-medium border transition-colors ${
+              className={`px-3 py-1 rounded-full text-xs font-semibold border transition-colors ${
                 form.excluded_areas.includes(area)
-                  ? 'bg-red-100 border-red-400 text-red-700'
-                  : 'bg-gray-100 border-gray-300 text-gray-600 hover:bg-gray-200'
+                  ? 'bg-red-200 border-red-500 text-red-800'
+                  : 'bg-white border-gray-400 text-gray-800 hover:bg-gray-100'
               }`}
             >
               {area}
@@ -136,8 +137,8 @@ export default function ConstraintForm({ groupId, code }: { groupId: string; cod
       </div>
 
       {/* Hard requirements */}
-      <div className="space-y-3 p-4 rounded-xl bg-red-50 border border-red-200">
-        <h3 className="text-sm font-bold text-red-700">Dealbreakers — I will not consider a flat without these</h3>
+      <div className="space-y-3 p-4 rounded-xl bg-red-100 border border-red-300">
+        <h3 className="text-sm font-bold text-red-800">Dealbreakers — I will not consider a flat without these</h3>
         <div className="grid grid-cols-2 gap-3">
           {checkbox('Must have lift', 'requires_lift')}
           {checkbox('Must have parking', 'requires_parking')}
@@ -145,9 +146,9 @@ export default function ConstraintForm({ groupId, code }: { groupId: string; cod
         </div>
         <div className="grid grid-cols-2 gap-4 mt-2">
           <div>
-            <label className="block text-xs font-semibold text-gray-700 mb-1">Min bathrooms</label>
+            <label className="block text-xs font-semibold text-gray-800 mb-1">Min bathrooms</label>
             <select
-              className="w-full border border-gray-300 rounded px-2 py-1 text-sm"
+              className={selectCls}
               value={form.min_bathrooms}
               onChange={(e) => setForm((f) => ({ ...f, min_bathrooms: Number(e.target.value) }))}
             >
@@ -155,9 +156,9 @@ export default function ConstraintForm({ groupId, code }: { groupId: string; cod
             </select>
           </div>
           <div>
-            <label className="block text-xs font-semibold text-gray-700 mb-1">Max floor if no lift (0 = no limit)</label>
+            <label className="block text-xs font-semibold text-gray-800 mb-1">Max floor if no lift (0 = no limit)</label>
             <select
-              className="w-full border border-gray-300 rounded px-2 py-1 text-sm"
+              className={selectCls}
               value={form.max_floor_without_lift}
               onChange={(e) => setForm((f) => ({ ...f, max_floor_without_lift: Number(e.target.value) }))}
             >
@@ -170,8 +171,8 @@ export default function ConstraintForm({ groupId, code }: { groupId: string; cod
       </div>
 
       {/* Soft preferences */}
-      <div className="space-y-3 p-4 rounded-xl bg-indigo-50 border border-indigo-200">
-        <h3 className="text-sm font-bold text-indigo-700">Nice to have — I&apos;d love these but won&apos;t veto without them</h3>
+      <div className="space-y-3 p-4 rounded-xl bg-indigo-100 border border-indigo-300">
+        <h3 className="text-sm font-bold text-indigo-800">Nice to have — I&apos;d love these but won&apos;t veto without them</h3>
         <div className="grid grid-cols-2 gap-3">
           {checkbox('Lift', 'prefers_lift')}
           {checkbox('Parking', 'prefers_parking')}
@@ -182,7 +183,7 @@ export default function ConstraintForm({ groupId, code }: { groupId: string; cod
         </div>
       </div>
 
-      {error && <p className="text-sm text-red-600">{error}</p>}
+      {error && <p className="text-sm text-red-700 font-medium">{error}</p>}
 
       <button
         type="submit"
